@@ -24,8 +24,8 @@ class ModelResult:
 
 def train_knn(data: PreparedData) -> ModelResult:
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
-    param_grid = {"n_neighbors": list(range(3, 22, 2))}
-    # param_grid = {"n_neighbors": [9]}
+    # param_grid = {"n_neighbors": list(range(3, 22, 2))}
+    param_grid = {"n_neighbors": [9]}
 
     grid_search = GridSearchCV(
         KNeighborsClassifier(),
