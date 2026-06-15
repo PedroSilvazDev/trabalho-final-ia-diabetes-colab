@@ -1,13 +1,4 @@
 Disciplina de Inteligência Artificial , Professor Munif , Unicesumar 2026
-
-# Trabalho Final - Predição de Diabetes (Pima Indians)
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PedroSilvazDev/trabalho-final-ia-diabetes-colab/blob/main/trabalho_final_ia_colab.ipynb)
-
-Versão do trabalho otimizada para **Google Colab**. Mesmo dataset, mesmos modelos (KNN + SVM) e mesma análise do repositório principal.
-
-Repositório PC/local: [trabalho-final-ia-diabetes](https://github.com/PedroSilvazDev/trabalho-final-ia-diabetes)
-
 ## Integrantes
 
 - Pedro Henrique da Silva - RA: 23021607-2
