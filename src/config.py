@@ -26,6 +26,21 @@ FEATURE_COLUMNS = [
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
 
+KNN_BEST_CONFIG = {
+    "imputer_strategy": "median",
+    "n_neighbors": 13,
+    "weights": "uniform",
+    "metric": "euclidean",
+}
+
+SVM_BEST_CONFIG = {
+    "imputer_strategy": "mean",
+    "C": 1,
+    "kernel": "rbf",
+    "gamma": "scale",
+    "class_weight": "balanced",
+}
+
 INTEGRANTES = [
     "Pedro Henrique da Silva - RA: 23021607-2",
     "Victor Hugo Rodrigues de Oliveira - RA: 23418156-2",

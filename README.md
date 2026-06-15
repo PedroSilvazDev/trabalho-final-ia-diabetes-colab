@@ -31,31 +31,28 @@ Atributos: Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, Dia
 
 ## Preparação dos dados
 
-A limpeza inicial é compartilhada; o **pré-processamento de cada modelo é otimizado separadamente** dentro do pipeline de treino (GridSearchCV):
+A limpeza inicial é compartilhada; cada modelo usa o **pipeline otimizado** definido em `src/config.py`:
 
 **Limpeza comum (antes da divisão):**
 - Substituição de zeros inválidos por valores ausentes nas variáveis clínicas.
 - Divisão estratificada em treino (80%) e teste (20%).
 
-**KNN — pipeline otimizado para distância:**
+**KNN — pipeline fixo:**
 - Imputação pela mediana.
-- Busca do melhor escalador: StandardScaler, RobustScaler ou MinMaxScaler.
-- Busca de k (3 a 21), pesos (uniform/distance) e métrica (euclidiana/manhattan).
-- Critério de seleção: F1-score na validação cruzada.
+- StandardScaler.
+- k=13, pesos uniformes, distância euclidiana.
 
-**SVM — pipeline otimizado para margem de separação:**
-- StandardScaler (ideal para SVM).
-- Imputação mediana ou média (testada na busca).
-- `class_weight` balanceado para lidar com classes desbalanceadas.
-- Busca de kernel, C e gamma.
-- Critério de seleção: F1-score na validação cruzada.
+**SVM — pipeline fixo:**
+- Imputação pela média.
+- StandardScaler.
+- kernel RBF, C=1, gamma=scale, class_weight=balanced.
 
 ## Métodos de IA utilizados
 
-| Parte | Algoritmo | Melhor configuração encontrada |
-|-------|-----------|----------------------------------|
+| Parte | Algoritmo | Configuração utilizada |
+|-------|-----------|------------------------|
 | Parte 1 | KNN | mediana + StandardScaler, k=13, uniform, euclidiana |
-| Parte 2 | SVM | média + StandardScaler, kernel RBF, C=1, gamma=scale, class_weight=balanced |
+| Parte 2 | SVM | média + StandardScaler, kernel RBF, C=1, class_weight=balanced |
 
 Ambos os modelos foram treinados com validação cruzada estratificada (5 folds).
 
@@ -73,8 +70,6 @@ Foram utilizadas as métricas: acurácia, precisão, revocação (recall), F1-sc
 ![Matriz de confusão - KNN](outputs/figures/matriz_confusao_knn.png)
 
 ![Matriz de confusão - SVM](outputs/figures/matriz_confusao_svm.png)
-
-![Busca do melhor k no KNN](outputs/figures/knn_busca_k.png)
 
 ![Comparação de métricas](outputs/figures/comparacao_metricas.png)
 
