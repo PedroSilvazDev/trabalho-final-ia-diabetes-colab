@@ -40,17 +40,31 @@ Atributos: Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, Dia
 
 ## Preparação dos dados
 
+A limpeza inicial é compartilhada; o **pré-processamento de cada modelo é otimizado separadamente** dentro do pipeline de treino (GridSearchCV):
+
+**Limpeza comum (antes da divisão):**
 - Substituição de zeros inválidos por valores ausentes nas variáveis clínicas.
-- Imputação de valores ausentes pela mediana.
-- Padronização com StandardScaler.
 - Divisão estratificada em treino (80%) e teste (20%).
+
+**KNN — pipeline otimizado para distância:**
+- Imputação pela mediana.
+- Busca do melhor escalador: StandardScaler, RobustScaler ou MinMaxScaler.
+- Busca de k (3 a 21), pesos (uniform/distance) e métrica (euclidiana/manhattan).
+- Critério de seleção: F1-score na validação cruzada.
+
+**SVM — pipeline otimizado para margem de separação:**
+- StandardScaler (ideal para SVM).
+- Imputação mediana ou média (testada na busca).
+- `class_weight` balanceado para lidar com classes desbalanceadas.
+- Busca de kernel, C e gamma.
+- Critério de seleção: F1-score na validação cruzada.
 
 ## Métodos de IA utilizados
 
-| Parte | Algoritmo | Detalhes |
-|-------|-----------|----------|
-| Parte 1 | KNN | k-Nearest Neighbors, melhor k = 13 |
-| Parte 2 | SVM | kernel = linear, C = 1, gamma = scale |
+| Parte | Algoritmo | Melhor configuração encontrada |
+|-------|-----------|----------------------------------|
+| Parte 1 | KNN | mediana + StandardScaler, k=13, uniform, euclidiana |
+| Parte 2 | SVM | média + StandardScaler, kernel RBF, C=1, gamma=scale, class_weight=balanced |
 
 Ambos os modelos foram treinados com validação cruzada estratificada (5 folds).
 
@@ -61,7 +75,7 @@ Foram utilizadas as métricas: acurácia, precisão, revocação (recall), F1-sc
 | Modelo | Acurácia | Precisão | Revocação | F1-score | ROC-AUC |
 |--------|----------|----------|-----------|----------|---------|
 | KNN (k=13) | 71,4% | 60,9% | 51,9% | 0,56 | 0,79 |
-| SVM (linear) | 70,1% | 59,1% | 48,1% | 0,53 | 0,81 |
+| SVM (RBF) | 73,4% | 59,7% | 74,1% | 0,66 | 0,82 |
 
 ## Gráficos de avaliação
 
@@ -77,13 +91,13 @@ Foram utilizadas as métricas: acurácia, precisão, revocação (recall), F1-sc
 
 ## Comparação dos resultados
 
-O modelo com melhor desempenho geral foi o **KNN**, considerando F1-score (0,56 vs 0,53) e acurácia (71,4% vs 70,1%). O SVM apresentou ROC-AUC ligeiramente superior (0,81 vs 0,79), indicando melhor capacidade de separar as classes em termos de ranking de probabilidades.
+O modelo com melhor desempenho geral foi o **SVM**, considerando F1-score (0,66 vs 0,56), acurácia (73,4% vs 71,4%) e ROC-AUC (0,82 vs 0,79). O pré-processamento dedicado ao SVM — com imputação pela média, `class_weight=balanced` e kernel RBF — melhorou significativamente a revocação (74,1%).
 
-O KNN obteve melhor revocação, identificando mais casos positivos de diabetes, enquanto o SVM teve precisão e revocação mais equilibradas com kernel linear. A busca de hiperparâmetros mostrou que k=13 foi o melhor para o KNN, e C=1 com kernel linear foi o melhor para o SVM.
+O KNN manteve desempenho estável com StandardScaler, k=13, pesos uniformes e distância euclidiana. A busca de hiperparâmetros mostrou que cada algoritmo se beneficia de um pipeline diferente.
 
 ## Conclusão
 
-O projeto demonstra o fluxo completo de uma solução de Inteligência Artificial: definição do problema, preparação dos dados, treinamento, avaliação e comparação entre modelos. Os resultados mostram que ambos os algoritmos são capazes de classificar a presença de diabetes com desempenho razoável, com o KNN apresentando leve vantagem nas métricas principais de classificação. As limitações incluem o tamanho reduzido do dataset e o desbalanceamento entre classes, o que impacta a revocação dos modelos. Trabalhos futuros podem explorar outras técnicas de balanceamento e engenharia de atributos.
+O projeto demonstra o fluxo completo de uma solução de Inteligência Artificial: definição do problema, preparação dos dados, treinamento, avaliação e comparação entre modelos. Os resultados mostram que ambos os algoritmos são capazes de classificar a presença de diabetes com desempenho razoável, com o SVM apresentando vantagem nas métricas principais após otimização específica do seu pipeline. As limitações incluem o tamanho reduzido do dataset e o desbalanceamento entre classes. Trabalhos futuros podem explorar outras técnicas de balanceamento e engenharia de atributos.
 
 ---
 

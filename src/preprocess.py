@@ -2,22 +2,18 @@ from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
-from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
 
 from .config import FEATURE_COLUMNS, RANDOM_STATE, TARGET_COLUMN, TEST_SIZE
 
 
 @dataclass
-class PreparedData:
-    x_train: np.ndarray
-    x_test: np.ndarray
+class SplitData:
+    x_train: pd.DataFrame
+    x_test: pd.DataFrame
     y_train: np.ndarray
     y_test: np.ndarray
     feature_names: list[str]
-    preprocessing_pipeline: Pipeline
 
 
 def replace_invalid_zeros(df: pd.DataFrame) -> pd.DataFrame:
@@ -34,16 +30,7 @@ def replace_invalid_zeros(df: pd.DataFrame) -> pd.DataFrame:
     return cleaned
 
 
-def build_preprocessing_pipeline() -> Pipeline:
-    return Pipeline(
-        steps=[
-            ("imputer", SimpleImputer(strategy="median")),
-            ("scaler", StandardScaler()),
-        ]
-    )
-
-
-def prepare_data(df: pd.DataFrame) -> PreparedData:
+def split_data(df: pd.DataFrame) -> SplitData:
     cleaned = replace_invalid_zeros(df)
     x = cleaned[FEATURE_COLUMNS]
     y = cleaned[TARGET_COLUMN].astype(int)
@@ -56,15 +43,10 @@ def prepare_data(df: pd.DataFrame) -> PreparedData:
         stratify=y,
     )
 
-    pipeline = build_preprocessing_pipeline()
-    x_train_processed = pipeline.fit_transform(x_train)
-    x_test_processed = pipeline.transform(x_test)
-
-    return PreparedData(
-        x_train=x_train_processed,
-        x_test=x_test_processed,
+    return SplitData(
+        x_train=x_train,
+        x_test=x_test,
         y_train=y_train.to_numpy(),
         y_test=y_test.to_numpy(),
         feature_names=FEATURE_COLUMNS,
-        preprocessing_pipeline=pipeline,
     )

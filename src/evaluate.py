@@ -76,17 +76,18 @@ def plot_metrics_comparison(metrics_df: pd.DataFrame):
 
 def plot_knn_k_search(grid_search: GridSearchCV):
     results = pd.DataFrame(grid_search.cv_results_)
+    k_col = next(c for c in results.columns if c.endswith("n_neighbors"))
     grouped = (
-        results.groupby("param_n_neighbors")["mean_test_score"]
+        results.groupby(k_col)["mean_test_score"]
         .mean()
         .reset_index()
-        .sort_values("param_n_neighbors")
+        .sort_values(k_col)
     )
     fig, ax = plt.subplots(figsize=(7, 5))
-    ax.plot(grouped["param_n_neighbors"], grouped["mean_test_score"], marker="o")
+    ax.plot(grouped[k_col], grouped["mean_test_score"], marker="o")
     ax.set_title("KNN - validacao cruzada por valor de k")
     ax.set_xlabel("Numero de vizinhos (k)")
-    ax.set_ylabel("Acuracia media (validacao cruzada)")
+    ax.set_ylabel("F1-score medio (validacao cruzada)")
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
     plt.show()
