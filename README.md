@@ -3,7 +3,7 @@ Disciplina de Inteligência Artificial , Professor Munif , Unicesumar 2026
 
 - Pedro Henrique da Silva - RA: 23021607-2
 - Victor Hugo Rodrigues de Oliveira - RA: 23418156-2
-- Victor Hungo Silva Garcia - RA: 23030968-2
+- Victor Hugo Silva Garcia - RA: 23030968-2
 
 ## Contextualização
 
